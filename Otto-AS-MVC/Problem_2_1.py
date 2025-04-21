@@ -5,6 +5,7 @@ import sys
 
 class CircuitViewer(QWidget):
     """
+    Uses example Circuit to produce desired output 
     Main GUI class for visualizing RLC circuits based on a structured text file.
     Uses PyQt5's Graphics View Framework to render schematic elements.
     """
