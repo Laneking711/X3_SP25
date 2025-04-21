@@ -158,9 +158,70 @@ class ottoCycleController():
     #endregion
 
     # region Functions that operate on the view
-    def plot_cycle_XY(self, X='s', Y='T', logx=False, logy=False, mass=False, total=False):
-        self.view.plot_cycle_XY(self.model, X=X, Y=Y, logx=logx,logy=logy, mass=mass, total=total)
-    
+    def plot_cycle_XY(self, cycle, X='s', Y='T',
+                      logx=False, logy=False,
+                      mass=False, total=False):
+        """
+        Draw the cycle using two chosen properties.
+        Guards out if the model hasn’t generated curve data yet.
+        """
+
+        # ── EARLY‑EXIT GUARD ────────────────────────────────────────────────
+        if not cycle.upperCurve.T or not cycle.lowerCurve.T:
+            return
+        # ────────────────────────────────────────────────────────────────────
+
+        # CLI vs GUI detection
+        QTPlotting = True
+        if self.ax is None:
+            self.ax = plt.subplot()
+            QTPlotting = False
+        ax = self.ax
+        ax.clear()
+        ax.set_xscale('log' if logx else 'linear')
+        ax.set_yscale('log' if logy else 'linear')
+
+        # Convert data columns to requested basis / units
+        X_LC = self.convertDataCol(cycle, data=cycle.lowerCurve.getDataCol(X),
+                                   colName=X, mass=mass, total=total)
+        Y_LC = self.convertDataCol(cycle, data=cycle.lowerCurve.getDataCol(Y),
+                                   colName=Y, mass=mass, total=total)
+        X_UC = self.convertDataCol(cycle, data=cycle.upperCurve.getDataCol(X),
+                                   colName=X, mass=mass, total=total)
+        Y_UC = self.convertDataCol(cycle, data=cycle.upperCurve.getDataCol(Y),
+                                   colName=Y, mass=mass, total=total)
+
+        # Plot upper & lower branches
+        ax.plot(X_LC, Y_LC, color='k')
+        ax.plot(X_UC, Y_UC, color='g')
+
+        # Axis labels
+        cycle.units.setPlotUnits(SI=cycle.units.SI, mass=mass, total=total)
+        ax.set_xlabel(cycle.lowerCurve.getAxisLabel(X, Units=cycle.units), fontsize='large')
+        ax.set_ylabel(cycle.lowerCurve.getAxisLabel(Y, Units=cycle.units), fontsize='large')
+
+        # Title and ticks
+        ax.set_title(cycle.name, fontsize='large')
+        ax.tick_params(axis='both', which='both', direction='in',
+                       top=True, right=True, labelsize='large')
+
+        # Plot state points 1‑4
+        def conv_state(st):
+            tmp = dc(st)
+            tmp.ConvertStateData(SI=cycle.getSI(), Units=cycle.units,
+                                 n=cycle.air.n, MW=cycle.air.MW,
+                                 mass=mass, total=total)
+            return tmp
+
+        for s in map(conv_state, (cycle.State1, cycle.State2, cycle.State3, cycle.State4)):
+            ax.plot(s.getVal(X), s.getVal(Y),
+                    marker='o', markerfacecolor='w', markeredgecolor='k')
+
+        # Autoscale & redraw
+        ax.relim();
+        ax.autoscale_view()
+        self.canvas.draw() if QTPlotting else plt.show()
+
     def print_summary(self):
         self.view.print_summary(self.model)
     
@@ -180,10 +241,27 @@ class ottoCycleController():
 
         tlow=self.view.le_TLow.text()
         pass
+def updateView(self, cycle):
+    """
+    Refresh plot and text fields.  Skip plotting if curves are empty.
+    """
+    # ── EARLY‑EXIT GUARD ────────────────────────────────────────────────
+    if not cycle.upperCurve.T or not cycle.lowerCurve.T:
+        self.updateDisplayWidgets(Model=cycle)
+        return
+    # ────────────────────────────────────────────────────────────────────
 
-    def updateView(self):
-        self.view.updateView(cycle=self.model)
-    #endregion
+    cycle.units.SI = self.rdo_Metric.isChecked()
+    logx = self.chk_LogAbcissa.isChecked()
+    logy = self.chk_LogOrdinate.isChecked()
+    xvar = self.cmb_Abcissa.currentText()
+    yvar = self.cmb_Ordinate.currentText()
+
+    self.plot_cycle_XY(cycle, X=xvar, Y=yvar,
+                       logx=logx, logy=logy,
+                       mass=False, total=True)
+    self.updateDisplayWidgets(Model=cycle)
+
 
 class ottoCycleView():
     def __init__(self):

@@ -1,0 +1,70 @@
+<Node>
+    name: 'NodeTL'
+    position: -40,20
+    draw: False
+</Node>
+<Node>
+    name: 'NodeTM'
+    position: 0,20
+    draw: True
+</Node>
+<Node>
+    name: 'NodeTR'
+    position: 40,20
+    draw: False
+</Node>
+<Node>
+    name: 'NodeBL'
+    position: -40,-20
+    draw: False
+</Node>
+<Node>
+    name: 'NodeBM'
+    position: 0,-20
+    draw: True
+</Node>
+<Node>
+    name: 'NodeBR'
+    position: 40,-20
+    draw: False
+</Node>
+
+<Wire>
+    name: 'conn1'
+    node1: 'NodeBL'
+    node2: 'NodeBM'
+</Wire>
+<Wire>
+    name: 'conn2'
+    node1: 'NodeBM'
+    node2: 'NodeBR'
+</Wire>
+<Wire>
+    name: 'conn3'
+    node1: 'NodeTM'
+    node2: 'NodeTR'
+</Wire>
+
+<Capacitor>
+    name: 'C'
+    node1: 'NodeBR'
+    node2: 'NodeTR'
+</Capacitor>
+
+<Inductor>
+    name: 'L'
+    node1: 'NodeTL'
+    node2: 'NodeTM'
+</Inductor>
+
+<Resistor>
+    name: 'R'
+    node1: 'NodeTM'
+    node2: 'NodeBM'
+</Resistor>
+
+<Voltage Source>
+    name: 'V(t)'
+    node1: 'NodeTL'
+    node2: 'NodeBL'
+</Voltage Source>
