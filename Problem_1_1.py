@@ -1,9 +1,10 @@
 """
+ChatGpt and Ex2 P2 code were used to help produce this code
 RLC_GUI.py  – Transient response of a driven RLC circuit
 ---------------------------------------------------------------------------
-Created 22‑Apr‑2025
+Created 20‑Apr‑2025
 
-This file fulfils the specification shown in the prompt image:
+This file fulfils the specification shown in the prompt:
 
 1.  Display a picture of the series‑RLC circuit together with editable
     line‑edit widgets for **R, L, C** and the sinusoidal source parameters
@@ -16,9 +17,6 @@ This file fulfils the specification shown in the prompt image:
 
 3.  Plot i₁(t), i₂(t) and v_C(t) in a Matplotlib canvas embedded in the GUI,
     complete with the interactive navigation toolbar.
-
-Apart from these doc‑strings, *no logic has been changed* from the working
-version you supplied.
 """
 
 # ---------------------------------------------------------------------------
