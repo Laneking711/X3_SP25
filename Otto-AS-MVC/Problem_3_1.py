@@ -1,5 +1,5 @@
 # Cycle_App.py – robust GUI for Otto & Diesel cycles
-
+#ChatGPT was used to help produce this code
 import sys
 from PyQt5 import QtWidgets as qtw
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -12,6 +12,7 @@ from Otto_GUI import Ui_Form
 
 class MainWindow(qtw.QWidget, Ui_Form):
     """
+    
     Top‑level Qt window hosting the **Otto / Diesel Cycle Calculator**.
 
     Features
